@@ -20,8 +20,19 @@ import org.w3c.dom.NodeList;
  * @author liuxl
  */
 public class TimeTreeNodeClusteror {
+	/**
+	 * RCST节点id-RCST节点Map（所有节点）
+	 */
 	Map<String, RCSTNode> idNodeMap = new HashMap<String, RCSTNode>();
+	
+	/**
+	 * RCST节点id-RCST节点Map（查询节点）
+	 */
 	Map<String, RCSTNode> queryIdNodeMap = new HashMap<String, RCSTNode>();
+	
+	/**
+	 * RCST节点id-RCST节点Map（点击节点）
+	 */
 	Map<String, RCSTNode> clickIdNodeMap = new HashMap<String, RCSTNode>();
 
 	List<RCSTRelation> parentedRelationList = new ArrayList<RCSTRelation>();
