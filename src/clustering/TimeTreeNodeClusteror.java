@@ -94,6 +94,33 @@ public class TimeTreeNodeClusteror {
 			System.out.println(e);
 		}
 		
+		//没啥用，应该删除关系类的设计。
+		setRelations();
+		
 		return idNodeMap.size();
 	}
+	
+	/**
+	 * 设置任意两节点间的RCST关系。
+	 */
+	private void setRelations(){
+		for(Map.Entry<String, RCSTNode> entry1 : idNodeMap.entrySet()){
+			RCSTNode node1 = entry1.getValue();
+			for(Map.Entry<String, RCSTNode> entry2 : idNodeMap.entrySet()){
+				RCSTNode node2 = entry2.getValue();
+				if(node1 != node2){
+					RCSTRelation rcstRelation;
+					if((rcstRelation = new RCSTRelation(node1, node2)).isParentedRelation()){
+						parentedRelationList.add(rcstRelation);
+					}else if(rcstRelation.isBrotherhoodRelation()){
+						brotherhoodRelationList.add(rcstRelation);
+					}else{
+						
+					}
+				}
+			}
+		}
+	}
+	
+	
 }
