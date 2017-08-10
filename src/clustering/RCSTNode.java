@@ -1,5 +1,6 @@
 package clustering;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RCSTNode {
@@ -39,6 +40,12 @@ public class RCSTNode {
 	public List<RCSTNode> childrenList;
 	
 	/**
+	 * 以当前节点对象为根节点的子树宽度。
+	 * 当前节点为叶子节点，子树宽度为1。
+	 */
+	public int subTreeWidth;
+	
+	/**
 	 * 构造函数（不设置父节点以及子节点）。
 	 * @param nodeId
 	 * @param rcstType
@@ -50,6 +57,7 @@ public class RCSTNode {
 		this.rcstType = rcstType;
 		this.rcstContent = rcstContent;
 		this.timestamp = timestamp;
+		childrenList = new ArrayList<RCSTNode>();
 	}
 	
 	/**
@@ -133,5 +141,13 @@ public class RCSTNode {
 			return true;
 		}
 		return false;
+	}
+	
+	public void setSubTreeWidth(int width){
+		this.subTreeWidth = width;
+	}
+	
+	public int width(){
+		return subTreeWidth;
 	}
 }

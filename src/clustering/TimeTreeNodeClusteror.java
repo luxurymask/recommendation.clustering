@@ -21,6 +21,11 @@ import org.w3c.dom.NodeList;
  */
 public class TimeTreeNodeClusteror {
 	/**
+	 * 探索图根节点。
+	 */
+	RCSTNode root;
+	
+	/**
 	 * RCST节点id-RCST节点Map（所有节点）
 	 */
 	Map<String, RCSTNode> idNodeMap = new HashMap<String, RCSTNode>();
@@ -40,7 +45,7 @@ public class TimeTreeNodeClusteror {
 
 	public TimeTreeNodeClusteror(String graphMLFilePath) {
 		File graphMLFile = new File(graphMLFilePath);
-
+		initNodes(graphMLFile);
 	}
 
 	/**
@@ -50,7 +55,7 @@ public class TimeTreeNodeClusteror {
 	 *            探索图文件。
 	 * @return 所有节点个数。
 	 */
-	public int getNodes(File graphMLFile) {
+	private int initNodes(File graphMLFile) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -97,6 +102,12 @@ public class TimeTreeNodeClusteror {
 		//没啥用，应该删除关系类的设计。
 		setRelations();
 		
+		//设置根节点。
+		root = idNodeMap.get("0");
+		
+		//递归设置节点宽度。
+		setSubTreeWidth(root);
+		
 		return idNodeMap.size();
 	}
 	
@@ -122,5 +133,15 @@ public class TimeTreeNodeClusteror {
 		}
 	}
 	
-	
+	/**
+	 * 递归设置节点宽度。
+	 * @param root 待设置节点。
+	 */
+	private void setSubTreeWidth(RCSTNode root){
+		if(root.childrenList.size() == 0) root.setSubTreeWidth(1);
+		
+		for(RCSTNode node : root.childrenList){
+			setSubTreeWidth(node);
+		}
+	}
 }
