@@ -138,6 +138,7 @@ public class TimeTreeNodeClusteror {
 	 * @param root 待设置节点。
 	 */
 	private void setSubTreeWidth(RCSTNode root){
+		//TODO
 		if(root.childrenList.size() == 0) root.setSubTreeWidth(1);
 		
 		for(RCSTNode node : root.childrenList){
