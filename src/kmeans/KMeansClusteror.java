@@ -14,10 +14,33 @@ import org.ansj.domain.Result;
 import org.ansj.splitWord.analysis.DicAnalysis;;
 
 public class KMeansClusteror {
+	/**
+	 * 查询词总个数
+	 */
+	private int queryCount;
+
+	/**
+	 * 分词总个数
+	 */
 	private int subTextCount;
-	private List<String> subTextVector = new ArrayList<>();
+
+	/**
+	 * 分词-向量索引Map
+	 */
 	private Map<String, Integer> subTextIndexMap = new HashMap<>();
 
+	/**
+	 * 分词-包含该分词的query个数Map
+	 */
+	private Map<String, Integer> subTextCountMap = new HashMap<>();
+
+	/**
+	 * 分词。
+	 * 
+	 * @param queryFile
+	 *            查询词文件。
+	 * @return 查询-分词List Map
+	 */
 	public Map<String, List<String>> splitQueryText(File queryFile) {
 		Map<String, List<String>> resultMap = new HashMap<>();
 
@@ -26,6 +49,8 @@ public class KMeansClusteror {
 		try {
 			reader = new BufferedReader(new FileReader(queryFile));
 			while ((query = reader.readLine()) != null) {
+				queryCount++;
+
 				// DicLibrary.insert(DicLibrary.DEFAULT, "消岩汤剂");
 				Result result = DicAnalysis.parse(query);
 				System.out.println(result);
@@ -38,6 +63,8 @@ public class KMeansClusteror {
 						if (!subTextIndexMap.containsKey(subText)) {
 							subTextIndexMap.put(subText, subTextCount++);
 						}
+						int count = subTextCountMap.getOrDefault(subText, 0);
+						subTextCountMap.put(subText, count + 1);
 					}
 				}
 				resultMap.put(query, subTextList);
@@ -53,18 +80,29 @@ public class KMeansClusteror {
 		File queryFile = new File(queryFilePath);
 		Map<String, List<String>> querySubTextsMap = splitQueryText(queryFile);
 
-		Map<String, int[]> querySubTextFrequencyVectorMap = new HashMap<>();
+		Map<String, double[]> querySubTextTFIDFVectorMap = new HashMap<>();
 		for (Map.Entry<String, List<String>> entry : querySubTextsMap.entrySet()) {
 			String queryText = entry.getKey();
 			List<String> subTexts = entry.getValue();
 			int[] queryTextFrequencyVector = new int[subTextCount];
+			double[] queryTextTFIDFVector = new double[subTextCount];
 			for (String subText : subTexts) {
 				int index = subTextIndexMap.get(subText);
 				queryTextFrequencyVector[index]++;
 			}
-			querySubTextFrequencyVectorMap.put(queryText, queryTextFrequencyVector);
+
+			int subTextCountInCurrentQuery = subTexts.size();
+			for (String subText : subTexts) {
+				int index = subTextIndexMap.get(subText);
+				int countInCurrentQuery = queryTextFrequencyVector[index];
+				int countOfQueryContainingSubText = subTextCountMap.get(subText);
+				double IDF = Math.log((double) queryCount / countOfQueryContainingSubText);
+				double TF = (double) countInCurrentQuery / subTextCountInCurrentQuery;
+				double TFIDF = TF * IDF;
+				queryTextTFIDFVector[index] = TFIDF;
+			}
+			querySubTextTFIDFVectorMap.put(queryText, queryTextTFIDFVector);
 		}
-		// TODO 将词频向量转换为TF-IDF向量。
 		// TODO 聚类。
 
 		return null;
