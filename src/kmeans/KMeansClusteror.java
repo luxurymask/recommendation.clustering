@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.ansj.domain.Result;
+import org.ansj.recognition.impl.StopRecognition;
 import org.ansj.splitWord.analysis.DicAnalysis;;
 
 public class KMeansClusteror {
@@ -51,9 +50,24 @@ public class KMeansClusteror {
 			reader = new BufferedReader(new FileReader(queryFile));
 			while ((query = reader.readLine()) != null) {
 				queryCount++;
-				//TODO 自定义词典，停止词。
 				// DicLibrary.insert(DicLibrary.DEFAULT, "消岩汤剂");
 				Result result = DicAnalysis.parse(query);
+				StopRecognition filter = new StopRecognition();
+				List<String> filterWords = new ArrayList<>();
+				filterWords.add("———");
+				filterWords.add("的");
+				filterWords.add("和");
+				filterWords.add("中");
+				filterWords.add("及");
+				filterWords.add("对");
+				filterWords.add("有");
+				filterWords.add(" ");
+				filterWords.add("‘");
+				filterWords.add("’");
+				filterWords.add("'");
+				filterWords.add("/");
+				filter.insertStopWords(filterWords);
+				System.out.println(result.recognition(filter).toStringWithOutNature());
 				String[] subTexts = result.toStringWithOutNature().split(",");
 				List<String> subTextList = new ArrayList<>();
 				for (int i = 0; i < subTexts.length; i++) {
@@ -203,11 +217,11 @@ public class KMeansClusteror {
 			for (Map.Entry<String, double[]> entry : clusterResultList.get(i).entrySet()) {
 				String queryText = entry.getKey();
 				list.add(queryText);
-				System.out.println(queryText);
+//				System.out.println(queryText);
 			}
 			result.add(list);
-			System.out.println(
-					"----------------------------------------------------------------------------------------------------");
+//			System.out.println(
+//					"----------------------------------------------------------------------------------------------------");
 		}
 
 		return result;
