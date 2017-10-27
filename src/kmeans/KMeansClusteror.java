@@ -67,7 +67,7 @@ public class KMeansClusteror {
 				filterWords.add("'");
 				filterWords.add("/");
 				filter.insertStopWords(filterWords);
-				System.out.println(result.recognition(filter).toStringWithOutNature());
+				// System.out.println(result.recognition(filter).toStringWithOutNature());
 				String[] subTexts = result.toStringWithOutNature().split(",");
 				List<String> subTextList = new ArrayList<>();
 				for (int i = 0; i < subTexts.length; i++) {
@@ -154,7 +154,7 @@ public class KMeansClusteror {
 					minDistance = currentDistance;
 					minIndex = i;
 				}
-			} 
+			}
 			clusterResultList.get(minIndex).put(queryText, tfidfVector);
 		}
 
@@ -181,7 +181,7 @@ public class KMeansClusteror {
 
 				centersList.set(i, newCenterVector);
 			}
-			
+
 			boolean flagInside = true;
 			for (int i = 0; i < k; i++) {
 				Iterator<Map.Entry<String, double[]>> iterator = clusterResultList.get(i).entrySet().iterator();
@@ -194,21 +194,22 @@ public class KMeansClusteror {
 					for (int j = 0; j < k; j++) {
 						double[] otherCenterVector = centersList.get(j);
 						double distanceWithOtherCenter = Tools.cosSim(tfidfVector, otherCenterVector);
-						if(minDistance < distanceWithOtherCenter) {
+						if (minDistance < distanceWithOtherCenter) {
 							minDistance = distanceWithOtherCenter;
 							minIndex = j;
 						}
 					}
-					
-					if(minIndex != i) {
+
+					if (minIndex != i) {
 						iterator.remove();
 						clusterResultList.get(minIndex).put(queryText, tfidfVector);
 						flagInside = false;
 					}
 				}
 			}
-			
-			if(flagInside == true) flag = true;
+
+			if (flagInside == true)
+				flag = true;
 		}
 
 		List<List<String>> result = new ArrayList<>();
@@ -217,11 +218,11 @@ public class KMeansClusteror {
 			for (Map.Entry<String, double[]> entry : clusterResultList.get(i).entrySet()) {
 				String queryText = entry.getKey();
 				list.add(queryText);
-//				System.out.println(queryText);
+				System.out.println(queryText);
 			}
 			result.add(list);
-//			System.out.println(
-//					"----------------------------------------------------------------------------------------------------");
+			System.out.println(
+					"----------------------------------------------------------------------------------------------------");
 		}
 
 		return result;
@@ -229,7 +230,8 @@ public class KMeansClusteror {
 
 	/**
 	 * args[0]: 查询文件文件夹路径。
-	 * (Mac："/Users/liuxl/Desktop/recommendation/phase1/input"；Windows："D:\Development\eclipse-workspace\recommendation.clustering\input"。)
+	 * (Mac："/Users/liuxl/Desktop/recommendation/phase1/input"；Windows：
+	 * "D:\Development\eclipse-workspace\recommendation.clustering\input"。)
 	 */
 	public static void main(String[] args) {
 
@@ -240,7 +242,8 @@ public class KMeansClusteror {
 			String queryFilePath = queryFile.getAbsolutePath();
 			if (queryFilePath.endsWith(".input")) {
 				KMeansClusteror clusteror = new KMeansClusteror();
-				List<List<String>> list3 = clusteror.cluster(queryFilePath, 3);
+				//List<List<String>> list3 = clusteror.cluster(queryFilePath, 3);
+				List<List<String>> list6 = clusteror.cluster(queryFilePath, 6);
 				// TODO 准确率计算
 				// TODO 文件输出
 			}
