@@ -1,8 +1,11 @@
 package kmeans;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -236,14 +239,43 @@ public class KMeansClusteror {
 	public static void main(String[] args) {
 
 		String queryFileFolderPath = args[0];
+		String outputFolderPath = args[1];
 		File folder = new File(queryFileFolderPath);
 		File[] fileList = folder.listFiles();
 		for (File queryFile : fileList) {
 			String queryFilePath = queryFile.getAbsolutePath();
-			if (queryFilePath.endsWith(".input")) {
+			if (queryFilePath.endsWith(".txt")) {
 				KMeansClusteror clusteror = new KMeansClusteror();
-				//List<List<String>> list3 = clusteror.cluster(queryFilePath, 3);
-				List<List<String>> list6 = clusteror.cluster(queryFilePath, 6);
+				for(int i = 2;i < 11;i++){
+					List<List<String>> resultList = clusteror.cluster(queryFilePath, i);
+					String name = queryFile.getName();
+					String resultName = name.split("\\.")[0] + i + ".txt";
+					File resultFile = new File(outputFolderPath + "/" + resultName);
+					if(!resultFile.exists()){
+						try {
+							resultFile.createNewFile();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					BufferedWriter writer;
+					try{
+						writer = new BufferedWriter(new FileWriter(resultFile));
+						for(List<String> list : resultList){
+							for(String s : list){
+								writer.write(s);
+								writer.newLine();
+							}
+							writer.write("-------------------------------");
+							writer.newLine();
+						}
+						writer.flush();
+						writer.close();
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					
+				}
 				// TODO 准确率计算
 				// TODO 文件输出
 			}
