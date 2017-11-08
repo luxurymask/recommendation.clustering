@@ -68,7 +68,7 @@ public class RCSTRelation {
 	 * @return
 	 */
 	public static boolean isBrotherhoodRelation(RCSTNode sourceNode, RCSTNode targetNode) {
-		return sourceNode.isYoungerBrotherOf(targetNode);
+		return sourceNode.isBrotherOf(targetNode);
 	}
 	
 	/**判断参数中的两节点是否是其他关系。
